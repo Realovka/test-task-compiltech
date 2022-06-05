@@ -8,22 +8,20 @@ import com.company.testtask.service.dto.UserResponseDto;
 import com.company.testtask.service.exception.DuplicateEntityException;
 import com.company.testtask.service.exception.EntityNotFoundException;
 import com.company.testtask.service.mapper.UserMapper;
-import com.company.testtask.service.util.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
-    private final Logger logger = LogManager.getLogger();
+
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Long create(UserRequestDto userRequestDto) {
@@ -32,7 +30,7 @@ public class UserServiceImpl implements UserService {
             User user = userMapper.mapToEntity(userRequestDto);
             return userRepository.save(user).getId();
         } else {
-            logger.log(Level.ERROR, "Such login already exists");
+            log.error("Such login already exists: {}", userRequestDto.getLogin());
             throw new DuplicateEntityException("Duplicate Entity", userRequestDto.getLogin());
         }
     }
@@ -62,7 +60,7 @@ public class UserServiceImpl implements UserService {
             user.setLogin(userRequestDto.getLogin());
         }
         if (userRequestDto.getPassword() != null) {
-            String password = passwordEncoder.createPasswordEncoded(userRequestDto.getPassword());
+            String password = new BCryptPasswordEncoder().encode(userRequestDto.getPassword());
             user.setPassword(password);
         }
         if (userRequestDto.getFullName() != null) {

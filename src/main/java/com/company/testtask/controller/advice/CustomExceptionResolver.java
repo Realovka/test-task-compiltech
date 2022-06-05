@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
-public class RestResponseEntityExceptionHandler {
+public class CustomExceptionResolver {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Message> handleEntityNotFound(EntityNotFoundException ex) {
@@ -27,5 +27,4 @@ public class RestResponseEntityExceptionHandler {
         String value = ex.getName();
         return new ResponseEntity<>(new Message(message, value), HttpStatus.CONFLICT);
     }
-
 }
