@@ -17,7 +17,7 @@ public class CustomExceptionResolver {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Message> handleEntityNotFound(EntityNotFoundException ex) {
         String message = ex.getMessageKey();
-        Long value = ex.getId();
+        Object value = ex.getValue();
         return new ResponseEntity<>(new Message(message, value), HttpStatus.NOT_FOUND);
     }
 

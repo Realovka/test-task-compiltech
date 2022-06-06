@@ -1,11 +1,14 @@
 package com.company.testtask.controller;
 
+import com.company.testtask.controller.socket.ServerWebSocketHandler;
 import com.company.testtask.service.UserService;
 import com.company.testtask.service.dto.UserRequestDto;
 import com.company.testtask.service.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,15 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final ServerWebSocketHandler serverWebSocketHandler;
 
     @GetMapping()
-    public List<UserResponseDto> findAll() {
-       return userService.findAll();
+    public List<UserResponseDto> findAll() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        serverWebSocketHandler.sendMessage(authentication);
+        return userService.findAll();
     }
 
     @PatchMapping("/{id}")

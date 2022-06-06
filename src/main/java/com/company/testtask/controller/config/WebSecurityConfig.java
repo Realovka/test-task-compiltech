@@ -1,6 +1,6 @@
 package com.company.testtask.controller.config;
 
-import com.company.testtask.controller.security.AuthTokenFilter;
+import com.company.testtask.controller.filter.AuthTokenFilter;
 import com.company.testtask.service.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -46,8 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests().antMatchers("/api/v1/login", "/api/v1/signup").permitAll()
+                .authorizeRequests().antMatchers("/login", "/signup").permitAll()
                 .anyRequest().authenticated()
+                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);

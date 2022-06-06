@@ -9,6 +9,8 @@ public interface UserService {
 
     Long create(UserRequestDto userRequestDto);
 
+    UserResponseDto findByLogin(String login);
+
     List<UserResponseDto> findAll();
 
     UserResponseDto update(Long id, UserRequestDto userRequestDto);

@@ -1,4 +1,4 @@
-package com.company.testtask.controller.security;
+package com.company.testtask.controller.filter;
 
 import com.company.testtask.service.builder.JwtTokenBuilder;
 import lombok.RequiredArgsConstructor;

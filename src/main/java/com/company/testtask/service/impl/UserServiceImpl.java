@@ -36,6 +36,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponseDto findByLogin(String login) {
+        User user = userRepository.findByLogin(login).orElseThrow(() -> new EntityNotFoundException("No such entity ", login));
+        return userMapper.mapToDto(user);
+    }
+
+    @Override
     public List<UserResponseDto> findAll() {
         List<User> users = userRepository.findAll();
         return userMapper.mapToListDto(users);
