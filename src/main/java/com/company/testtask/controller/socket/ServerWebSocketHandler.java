@@ -42,7 +42,6 @@ public class ServerWebSocketHandler extends TextWebSocketHandler implements SubP
         sessions.remove(authUser);
     }
 
-
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         session.sendMessage(message);
