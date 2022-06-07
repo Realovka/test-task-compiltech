@@ -44,4 +44,10 @@ public class UserController {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @DeleteMapping("/{startId}/{finishId}")
+    public ResponseEntity<String> deleteByIdRange(@PathVariable Long startId, @PathVariable Long finishId) {
+        userService.deleteByIdRange(startId, finishId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.company.testtask.service.exception.ExceptionMessage.DUPLICATE_ENTITY;
+import static com.company.testtask.service.exception.ExceptionMessage.NO_SUCH_ENTITIES;
+import static com.company.testtask.service.exception.ExceptionMessage.NO_SUCH_ENTITY;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -31,13 +35,13 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(user).getId();
         } else {
             log.error("Such login already exists: {}", userRequestDto.getLogin());
-            throw new DuplicateEntityException("Duplicate Entity", userRequestDto.getLogin());
+            throw new DuplicateEntityException(DUPLICATE_ENTITY, userRequestDto.getLogin());
         }
     }
 
     @Override
     public UserResponseDto findByLogin(String login) {
-        User user = userRepository.findByLogin(login).orElseThrow(() -> new EntityNotFoundException("No such entity ", login));
+        User user = userRepository.findByLogin(login).orElseThrow(() -> new EntityNotFoundException(NO_SUCH_ENTITY, login));
         return userMapper.mapToDto(user);
     }
 
@@ -49,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto update(Long id, UserRequestDto userRequestDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No such entity", id));
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(NO_SUCH_ENTITY, id));
         updateUser(userRequestDto, user);
         User userFromDb = userRepository.save(user);
         return userMapper.mapToDto(userFromDb);
@@ -57,8 +61,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No such entity", id));
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(NO_SUCH_ENTITY, id));
         userRepository.delete(user);
+    }
+
+    @Override
+    public void deleteByIdRange(Long startId, Long finishId) {
+        List<User> users = userRepository.findByIdRange(startId, finishId);
+        if (users.size() < 1) {
+            throw new EntityNotFoundException(NO_SUCH_ENTITIES, List.of(startId, finishId));
+        }
+        userRepository.deleteByIdRange(startId, finishId);
     }
 
     private void updateUser(UserRequestDto userRequestDto, User user) {

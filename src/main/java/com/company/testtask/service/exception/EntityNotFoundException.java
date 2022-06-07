@@ -6,7 +6,7 @@ import lombok.Getter;
 public class EntityNotFoundException extends RuntimeException {
 
     private String messageKey;
-    public Object value;
+    private Object value;
 
     public EntityNotFoundException(String messageKey, Object value) {
         this.messageKey = messageKey;
