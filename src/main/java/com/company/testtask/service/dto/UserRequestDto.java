@@ -1,12 +1,12 @@
 package com.company.testtask.service.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserRequestDto {
     private String login;
     private String password;

@@ -76,6 +76,10 @@ public class UserServiceImpl implements UserService {
 
     private void updateUser(UserRequestDto userRequestDto, User user) {
         if (userRequestDto.getLogin() != null) {
+            boolean result = userRepository.existsByLogin(userRequestDto.getLogin());
+            if (result) {
+                throw new DuplicateEntityException(DUPLICATE_ENTITY, userRequestDto.getLogin());
+            }
             user.setLogin(userRequestDto.getLogin());
         }
         if (userRequestDto.getPassword() != null) {
@@ -83,7 +87,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(password);
         }
         if (userRequestDto.getFullName() != null) {
-            user.setFullName(user.getFullName());
+            user.setFullName(userRequestDto.getFullName());
         }
     }
 }
